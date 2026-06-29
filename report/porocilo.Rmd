@@ -898,12 +898,12 @@ if (file.exists(descr_path)) {
 
 ## D. Vzorec vprašalnika
 
-Skenirana kopija praznega vprašalnika (slovenska različica), kakršen je
-bil uporabljen na sejah, je priložena ločeno (`data/raw/questionnaire.pdf`).
+Kopija praznega vprašalnika (slovenska različica), kakršen je
+bil uporabljen na sejah, je priložena ločeno in dostopna v repozitoriju (`data/raw/Vprašalnik_Zvočni objem.pdf`).
 
 ## E. Reproducibilnost
 
-Celotna koda je dostopna v projektnem repozitoriju. Glavni skripti:
+Celotna koda je dostopna v projektnem repozitoriju <https://github.com/majazaloznik/tinitus>. Glavne skripte:
 
 - `R/00_setup.R` — knjižnice in pomožne funkcije
 - `R/01_clean_data.R` — predobdelava surovih podatkov

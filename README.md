@@ -24,6 +24,7 @@ zvocni_objem/
 │   ├── raw/
 │   │   ├── composition_coding.csv       Binary coding of musical/masking elements per part
 │   │   ├── composition_descriptions.txt Boštjan's prose descriptions of all 24 parts
+│   │   ├── Vprašalnik_Zvočni objem      Questionnaire
 │   │   ├── tinitus_2026.csv             (not in repo — see data/raw/README.md)
 │   │   └── signup_estimate.csv          (not in repo — see data/raw/README.md)
 │   └── derived/                         Outputs of cleaning + analysis scripts (generated)
