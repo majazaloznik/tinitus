@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: >-
+  Zvočni objem: neposredni perceptualni učinki umetniških
+zvočnih kompozicij na doživljanje tinitusa — eksploratorna
+mešano-metodološka analiza
+message: "If you use this work, please cite it as follows."
+type: dataset
+authors:
+  - family-names: Simon
+given-names: Boštjan
+affiliation: "Zavod TINITUS"
+date-released: 2026-06-29
+license: CC-BY-4.0
+repository-code: "https://github.com/majazaloznik/tinitus"
+abstract: >-
+  Exploratory mixed-methods analysis of 118 participant
+questionnaire responses across eight art-music tinnitus sound
+baths (Nova Gorica, February–April 2026). Quantitative ratings
+of pleasantness and perceived impact on tinnitus per
+composition part, qualitative free-text descriptions analysed
+by Slovenian-language lemma frequency, and a post-hoc
+element-level coding of sonic content. Report in Slovenian,
+analysis code in R.
+keywords:
+- tinnitus
+- sound masking
+- art-health
+- mixed methods
+- exploratory analysis
