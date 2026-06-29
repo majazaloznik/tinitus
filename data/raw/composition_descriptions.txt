@@ -1,0 +1,97 @@
+OPISI KOMPOZICIJ
+================
+
+Spodnji opisi so avtorjev opis zvočne vsebine vsakega dela vsake seje.
+Iz teh opisov je bila izpeljana binarna kodirna shema v
+data/raw/composition_coding.csv.
+
+----------------------------------------------------------------
+ZVOČNI OBJEM 1 (seja I, 24. 2. 2026)
+----------------------------------------------------------------
+Prvi del:  akordi fade in / fade out
+           masker: črički in malo belega šuma
+Drugi del: ritmične sekvence
+           maskerji: zvok vode in kasneje škržati
+Tretji del: drone akordi in potem en ton
+           maskerji: umetni maskerji (moduliran beli šum
+           in noise sintetizatorja na visokih frekvencah)
+
+----------------------------------------------------------------
+ZVOČNI OBJEM 2 (seja II, 3. 3. 2026)
+----------------------------------------------------------------
+Prvi del:  Gamelan indonezijski orkester, gongi počasno in redko
+           masker: zvoki narave (ptičev)
+Drugi del: Gamelan ritmično
+           masker: črički in moduliran beli šum
+Tretji del: akordi na sintetizator fade in fade out
+           maskerji: črički in terenski posneti
+
+----------------------------------------------------------------
+ZVOČNI OBJEM 3 (seja III, 10. 3. 2026)
+----------------------------------------------------------------
+Prvi del:  Gamelan gongi
+           maskerji: posnetek jutra (ptiči), čričkov, vode
+Drugi del: Gamelan drugačen, sekvence
+           maskerji: dež, škržati, beli šum
+Tretji del: Sintetizator sekvenca in gamelan, sampli igrač
+           masker: mešanica belih šumov
+
+----------------------------------------------------------------
+ZVOČNI OBJEM 4 (seja IV, 17. 3. 2026)
+----------------------------------------------------------------
+Prvi del:  Gamelan + sint akordi
+           masker: prasketanje plošče, črički, beli šum
+Drugi del: Sint akordi pads
+           maskerji: prasketanje plošče in moduliran beli šum
+Tretji del: Sint akordi
+           masker: moduliran beli šum, ptičje petje
+
+----------------------------------------------------------------
+ZVOČNI OBJEM 5 (seja V, 24. 3. 2026)
+----------------------------------------------------------------
+Prvi del:  Kalimba čez stereo efekte
+           masker: posnetek jutra
+Drugi del: Sint melodija in akordi, klarinet čez efekte
+           masker: terenski posnetek parka Rafut, beli šum
+Tretji del: Sint melodija, sint akordi
+           masker: mečkanje vrečke, kombinacija šumov, posnetek Nadiže
+
+----------------------------------------------------------------
+ZVOČNI OBJEM 6 (seja VI, 31. 3. 2026)
+----------------------------------------------------------------
+Prvi del:  Gamelan gongi
+           masker: posnetek jutra, prasketanje vinil plošče, beli šum
+Drugi del: Akordi sint
+           masker: beli šum, mečkanje vrečke
+Tretji del: Sint sekvenca in drone
+           masker: zvok dežja, beli šum, kraguljček
+
+----------------------------------------------------------------
+ZVOČNI OBJEM 7 (seja VII, 7. 4. 2026)
+----------------------------------------------------------------
+Prvi del:  Sekvence na sintu
+           masker: posnetek jutra, beli šum
+Drugi del: Akordi na sintu
+           masker: škržati, kraguljček, beli šum
+Tretji del: Sekvenca na sintu
+           masker: jutro, prasketanje vinil plošče, beli šum
+
+----------------------------------------------------------------
+ZVOČNI OBJEM 8 (seja VIII, 14. 4. 2026)
+----------------------------------------------------------------
+Prvi del:  Počasna sekvenca, akordi, hitra sekvenca
+           masker: vrečka, beli šum
+Drugi del: Kalimba in efekti
+           masker: terenski posnetek Lijak, prasketanje vinila,
+                   posnetek dežja
+Tretji del: Dolgi toni saksofon, drone akordi
+           masker: kraguljčki, beli šum, posnetek Nadiže, ptičje petje
+
+----------------------------------------------------------------
+SPLOŠNA OPOMBA AVTORJA
+----------------------------------------------------------------
+Modulirani beli šum sem dodajal in odvzemal po okusu, da se je
+stvar premikala in da sem pokril čimveč frekvenc, ki bi
+zamaskirale tinitus. Ta sprememba se je dogajala večkrat na 15-min
+sklop seanse, ker je bilo poslušanje enega samega maskerja več kot
+5 min utrujajoče.

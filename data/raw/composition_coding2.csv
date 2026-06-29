@@ -1,0 +1,109 @@
+session;part;element_type;element_label_sl
+I;1;musical;Akordi
+I;1;masking; ri ki
+I;1;masking;Beli  um
+I;2;musical;Ritmika
+I;2;masking;Voda
+I;2;masking; kr ati
+I;3;musical;Drone
+I;3;musical;Akordi
+I;3;musical;En sam ton
+I;3;masking;Moduliran beli  um
+I;3;masking;Noise visoke frekv.
+II;1;musical;Gamelan
+II;1;musical;Gongi
+II;1;masking;Pti i
+II;2;musical;Gamelan
+II;2;musical;Ritmika
+II;2;masking; ri ki
+II;2;masking;Moduliran beli  um
+II;3;musical;Akordi
+II;3;musical;Sintetizator
+II;3;masking; ri ki
+II;3;masking;Terenski posnetek
+III;1;musical;Gamelan
+III;1;musical;Gongi
+III;1;masking;Posnetek jutra
+III;1;masking;Pti i
+III;1;masking; ri ki
+III;1;masking;Voda
+III;2;musical;Gamelan
+III;2;masking;De 
+III;2;masking; kr ati
+III;2;masking;Beli  um
+III;3;musical;Sintetizator
+III;3;musical;Gamelan
+III;3;musical;Sampli igra 
+III;3;masking;Beli  um
+IV;1;musical;Gamelan
+IV;1;musical;Gongi
+IV;1;musical;Sintetizator
+IV;1;musical;Akordi
+IV;1;masking;Prasketanje vinila
+IV;1;masking; ri ki
+IV;1;masking;Beli  um
+IV;2;musical;Akordi
+IV;2;musical;Sintetizator
+IV;2;masking;Prasketanje vinila
+IV;2;masking;Moduliran beli  um
+IV;3;musical;Akordi
+IV;3;musical;Sintetizator
+IV;3;masking;Moduliran beli  um
+IV;3;masking;Pti i
+V;1;musical;Kalimba
+V;1;masking;Posnetek jutra
+V;2;musical; Melodija
+V;2;musical;Sintetizator
+V;2;musical;Akordi
+V;2;musical;Klarinet
+V;2;masking;Terenski posnetek
+V;2;masking;Beli  um
+V;3;musical; Melodija
+V;3;musical;Sintetizator
+V;3;musical;Akordi
+V;3;masking;Me kanje vre ke
+V;3;masking;Beli  um
+V;3;masking;Terenski posnetek
+VI;1;musical;Gamelan
+VI;1;musical;Gongi
+VI;1;masking;Posnetek jutra
+VI;1;masking;Prasketanje vinila
+VI;1;masking;Beli  um
+VI;2;musical;Akordi
+VI;2;musical;Sintetizator
+VI;2;masking;Beli  um
+VI;2;masking;Me kanje vre ke
+VI;3;musical;Sintetizator
+VI;3;musical;Drone
+VI;3;musical;Akordi
+VI;3;masking;De 
+VI;3;masking;Beli  um
+VI;3;masking;Kragulj ki
+VII;1;musical;Sintetizator
+VII;1;masking;Posnetek jutra
+VII;1;masking;Beli  um
+VII;2;musical;Akordi
+VII;2;musical;Sintetizator
+VII;2;masking; kr ati
+VII;2;masking;Kragulj ki
+VII;2;masking;Beli  um
+VII;3;musical;Sintetizator
+VII;3;masking;Posnetek jutra
+VII;3;masking;Prasketanje vinila
+VII;3;masking;Beli  um
+VIII;1;musical;Sintetizator
+VIII;1;musical;Akordi
+VIII;1;musical;Ritmika
+VIII;1;masking;Me kanje vre ke
+VIII;1;masking;Beli  um
+VIII;2;musical;Kalimba
+VIII;2;masking;Terenski posnetek
+VIII;2;masking;Prasketanje vinila
+VIII;2;masking;De 
+VIII;3;musical;Saksofon
+VIII;3;musical;Drone
+VIII;3;musical;Akordi
+VIII;3;masking;Kragulj ki
+VIII;3;masking;Beli  um
+VIII;3;masking;Terenski posnetek
+VIII;3;masking;Pti i

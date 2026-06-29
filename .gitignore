@@ -1,0 +1,6 @@
+.Rhistory
+.Rproj.user/
+*.Rproj
+data/raw/tinitus_2026.csv
+data/derived/*.rds
+data/raw/signup_estimate.csv

@@ -1,0 +1,109 @@
+session;part;element_type;element_id;element_label_sl
+I;1;musical;akordi;Akordi
+I;1;masking;cricki;Èrièki
+I;1;masking;beli_sum;Beli šum
+I;2;musical;ritmika;Ritmika
+I;2;masking;voda;Voda
+I;2;masking;skrzati;Škržati
+I;3;musical;drone;Drone
+I;3;musical;akordi;Akordi
+I;3;musical;en_sam_ton;En sam ton
+I;3;masking;modulirani_sum;Moduliran beli šum
+I;3;masking;noise_visoke;Noise visoke frekv.
+II;1;musical;gamelan;Gamelan
+II;1;musical;gongi;Gongi
+II;1;masking;ptici;Ptièi
+II;2;musical;gamelan;Gamelan
+II;2;musical;ritmika;Ritmika
+II;2;masking;cricki;Èrièki
+II;2;masking;modulirani_sum;Moduliran beli šum
+II;3;musical;akordi;Akordi
+II;3;musical;sintetizator;Sintetizator
+II;3;masking;cricki;Èrièki
+II;3;masking;terenski;Terenski posnetek
+III;1;musical;gamelan;Gamelan
+III;1;musical;gongi;Gongi
+III;1;masking;jutro;Posnetek jutra
+III;1;masking;ptici;Ptièi
+III;1;masking;cricki;Èrièki
+III;1;masking;voda;Voda
+III;2;musical;gamelan;Gamelan
+III;2;masking;dez;Dež
+III;2;masking;skrzati;Škržati
+III;2;masking;beli_sum;Beli šum
+III;3;musical;sintetizator;Sintetizator
+III;3;musical;gamelan;Gamelan
+III;3;musical;sampli_igrac;Sampli igraè
+III;3;masking;beli_sum;Beli šum
+IV;1;musical;gamelan;Gamelan
+IV;1;musical;gongi;Gongi
+IV;1;musical;sintetizator;Sintetizator
+IV;1;musical;akordi;Akordi
+IV;1;masking;vinil;Prasketanje vinila
+IV;1;masking;cricki;Èrièki
+IV;1;masking;beli_sum;Beli šum
+IV;2;musical;akordi;Akordi
+IV;2;musical;sintetizator;Sintetizator
+IV;2;masking;vinil;Prasketanje vinila
+IV;2;masking;modulirani_sum;Moduliran beli šum
+IV;3;musical;akordi;Akordi
+IV;3;musical;sintetizator;Sintetizator
+IV;3;masking;modulirani_sum;Moduliran beli šum
+IV;3;masking;ptici;Ptièi
+V;1;musical;kalimba;Kalimba
+V;1;masking;jutro;Posnetek jutra
+V;2;musical;melodija;Melodija
+V;2;musical;sintetizator;Sintetizator
+V;2;musical;akordi;Akordi
+V;2;musical;klarinet;Klarinet
+V;2;masking;terenski;Terenski posnetek
+V;2;masking;beli_sum;Beli šum
+V;3;musical;melodija;Melodija
+V;3;musical;sintetizator;Sintetizator
+V;3;musical;akordi;Akordi
+V;3;masking;vrecka;Meèkanje vreèke
+V;3;masking;beli_sum;Beli šum
+V;3;masking;terenski;Terenski posnetek
+VI;1;musical;gamelan;Gamelan
+VI;1;musical;gongi;Gongi
+VI;1;masking;jutro;Posnetek jutra
+VI;1;masking;vinil;Prasketanje vinila
+VI;1;masking;beli_sum;Beli šum
+VI;2;musical;akordi;Akordi
+VI;2;musical;sintetizator;Sintetizator
+VI;2;masking;beli_sum;Beli šum
+VI;2;masking;vrecka;Meèkanje vreèke
+VI;3;musical;sintetizator;Sintetizator
+VI;3;musical;drone;Drone
+VI;3;musical;akordi;Akordi
+VI;3;masking;dez;Dež
+VI;3;masking;beli_sum;Beli šum
+VI;3;masking;kraguljcki;Kraguljèki
+VII;1;musical;sintetizator;Sintetizator
+VII;1;masking;jutro;Posnetek jutra
+VII;1;masking;beli_sum;Beli šum
+VII;2;musical;akordi;Akordi
+VII;2;musical;sintetizator;Sintetizator
+VII;2;masking;skrzati;Škržati
+VII;2;masking;kraguljcki;Kraguljèki
+VII;2;masking;beli_sum;Beli šum
+VII;3;musical;sintetizator;Sintetizator
+VII;3;masking;jutro;Posnetek jutra
+VII;3;masking;vinil;Prasketanje vinila
+VII;3;masking;beli_sum;Beli šum
+VIII;1;musical;sintetizator;Sintetizator
+VIII;1;musical;akordi;Akordi
+VIII;1;musical;ritmika;Ritmika
+VIII;1;masking;vrecka;Meèkanje vreèke
+VIII;1;masking;beli_sum;Beli šum
+VIII;2;musical;kalimba;Kalimba
+VIII;2;masking;terenski;Terenski posnetek
+VIII;2;masking;vinil;Prasketanje vinila
+VIII;2;masking;dez;Dež
+VIII;3;musical;saksofon;Saksofon
+VIII;3;musical;drone;Drone
+VIII;3;musical;akordi;Akordi
+VIII;3;masking;kraguljcki;Kraguljèki
+VIII;3;masking;beli_sum;Beli šum
+VIII;3;masking;terenski;Terenski posnetek
+VIII;3;masking;ptici;Ptièi

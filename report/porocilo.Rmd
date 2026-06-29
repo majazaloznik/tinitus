@@ -1,0 +1,922 @@
+---
+title: "Zvočni objem: neposredni perceptualni učinki umetniških zvočnih kompozicij na doživljanje tinitusa"
+subtitle: "Eksploratorna mešano-metodološka analiza"
+author: "Boštjan Simon, Zavod TINITUS"
+date: "`r format(Sys.Date(), '%d. %B %Y')`"
+output:
+  word_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    fig_caption: true
+    keep_md: false
+lang: sl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo       = FALSE,
+  message    = FALSE,
+  warning    = FALSE,
+  fig.align  = "center",
+  fig.width  = 7,
+  fig.height = 5,
+  dpi        = 150,
+  out.width  = "85%"
+)
+
+# Source all helpers + load data once
+source(here::here("R", "00_setup.R"))
+source(here::here("R", "02_plots.R"))
+
+ps  <- readRDS(here::here("data", "derived", "person_session.rds"))
+pl  <- readRDS(here::here("data", "derived", "part_level.rds"))
+sg  <- readRDS(here::here("data", "derived", "signup_summary.rds"))
+
+# Optional: text-analysis outputs. May not exist on first knit.
+.text_outputs <- here::here("data", "derived",
+                            c("freq_overall.rds", "lemma_scores.rds"))
+HAS_TEXT <- all(file.exists(.text_outputs))
+if (HAS_TEXT) {
+  freq_overall <- readRDS(.text_outputs[1])
+  lemma_scores <- readRDS(.text_outputs[2])
+}
+
+# Element-level analysis outputs (05_composition.R). Should always be present.
+.elem_outputs <- here::here("data", "derived",
+                            c("element_summary.rds", "composition_matrix.rds",
+                              "concordance.rds", "grand_means.rds"))
+HAS_ELEM <- all(file.exists(.elem_outputs))
+if (HAS_ELEM) {
+  elem_summary  <- readRDS(.elem_outputs[1])
+  comp_matrix   <- readRDS(.elem_outputs[2])
+  concordance   <- readRDS(.elem_outputs[3])
+  GRAND         <- readRDS(.elem_outputs[4])
+  # Reusable elements metadata for the matrix plot
+  elements_meta_df <- unique(elem_summary[, c("element_id", "element_type",
+                                              "element_label_sl")])
+}
+
+N_OBS <- nrow(ps)
+N_SESSIONS <- length(unique(ps$session))
+```
+
+# Povzetek
+
+Pričujoče poročilo predstavlja eksploratorno analizo perceptualnih učinkov osmih
+umetniških zvočnih kompozicij ("zvočnih kopeli"), izvedenih v okviru projekta
+*Zvočni objem* (Zavod TINITUS, februar–april 2026, Glasbena šola Nova Gorica).
+Vsako kopel je sestavljala tridelna kompozicija avtorja Boštjana Simona, ki je
+združevala načela *zvočnega prekrivanja ali maskiranja tinitusa* (frekvenčna izhodišča je svetovala dr. Branka Getzy, ORL) z umetniško zasnovo, ki preprečuje monotonijo
+običajnih maskerjev.
+
+Pristop k zbiranju podatkov je bil presečen: posameznikov nismo spremljali
+longitudinalno, temveč smo vsak obisk obravnavali kot ločen dogodek opazovanja.
+Skupno smo zbrali `r N_OBS` opazovanj v `r N_SESSIONS` sejah. Iz seznamov prisotnosti
+ocenjujemo, da je sodelovalo približno `r sg$n_unique_attendees` različnih oseb;
+povprečje `r sprintf("%.2f", sg$mean_sessions_per_p)` obiskov na osebo.
+
+Ker gre za eksploratorno študijo brez kontrolne skupine, brez longitudinalnega
+sledenja in brez naključnega vzorčenja, so vse navedene številke deskriptivne;
+sklepov o učinkovitosti zvočne kopeli kot terapevtske intervencije iz njih ni
+mogoče izpeljati. Namen poročila je: (1) opisati doživljanje udeleženk in
+udeležencev med posameznimi deli kompozicij, (2) prepoznati zvočne elemente, ki
+so v perceptualnem smislu prinašali olajšanje ali poslabšanje, ter (3) ponuditi
+osnovo za zasnovo prihodnjih nadzorovanih raziskav.
+
+# Uvod
+
+Tinitus je pogosta slušna izkušnja: prizadene približno desetino splošne
+populacije. Ozdravitve ni; obvladovanje simptomov temelji predvsem na zvočnem
+prekrivanju, kognitivno-vedenjski terapiji in prilagoditvi vsakdanjih navad.
+
+Klasični zvočni maskerji (beli šum, posnetki narave) so za del oseb učinkoviti,
+a imajo dve znani slabosti: monotonost in habituacijo. Po daljši izpostavljenosti
+se njihov maskirni učinek zmanjša, hkrati pa lahko postanejo moteči. Pričujoči
+projekt zato preverja drugačno možnost: ali lahko **umetniško komponirani zvok**,
+ki ohranja maskirno funkcijo in hkrati uvaja estetsko in dinamično raznolikost,
+ponudi alternativen pristop.
+
+Pomembno je razumeti, česa projekt **ne** preučuje: ne dolgotrajne učinkovitosti,
+ne fizioloških sprememb in ne kliničnih izhodov. Pozornost je usmerjena
+izključno na **neposredne, znotraj-sejne perceptualne učinke** posameznih delov
+kompozicij.
+
+# Raziskovalna vprašanja
+
+**Primarna:**
+
+1. Kateri deli umetniških zvočnih kompozicij so povezani z zaznanim **olajšanjem**
+   tinitusa?
+2. Kateri deli so povezani s **poslabšanjem** zaznave tinitusa?
+3. Kako udeleženci ocenjujejo **estetsko/afektivno doživetje** (prijetnost) po
+   delih?
+
+**Sekundarna (eksploratorna):**
+
+4. Ali se vzorci odgovorov razlikujejo glede na **podtip tinitusa**
+   (piskanje, šumenje, brenčanje, bobnenje)?
+5. Ali se razlikujejo glede na **resnost simptoma** ali **prejšnje izkušnje z
+   zvočnimi maskerji**?
+6. Kako kvalitativni opisi izkušnje **kontekstualizirajo** numerične ocene?
+7. Ali sta **prijetnost in olajšanje** med sabo povezana – ali "všečno" pomeni
+   tudi "manj tinitusa"?
+
+Pred začetkom študije ni bilo postavljenih nobenih hipotez; vse analize so
+deskriptivne.
+
+# Metode
+
+## Tip študije
+
+Eksploratorna, mešano-metodološka, **presečna opazovalna študija s ponovljenim
+vzorčenjem**. Vsaka seja je obravnavana kot samostojen dogodek zbiranja podatkov;
+**enota analize je odgovor v posamezni seji** (person-session response), ne
+posameznik v daljšem časovnem obdobju.
+
+Razlogi za tako zasnovo:
+
+- maksimizira izrabo podatkov ob nihajočem obisku,
+- se izogne odhodu udeležencev (attrition) tipičnemu za longitudinalne načrte,
+- ustreza raziskovalnim vprašanjem o *neposrednih* (ne kumulativnih) učinkih,
+- znižuje breme sodelovanja,
+- omogoča anonimno zbiranje (brez sledljivih identifikatorjev).
+
+**Kompromisi:** ne moremo oceniti kumulativnih ali individualnih učinkov, ne
+moremo strogo upoštevati korelacije ponovljenih meritev pri istih osebah, ne
+moremo opisati osebnih trajektorijev. Nekaj udeležencev je verjetno prispevalo več
+opazovanj; v primarni analizi so ta obravnavana neodvisno (znana omejitev,
+obravnavana spodaj).
+
+## Intervencija
+
+**Skupinske zvočne kopeli avtorja Boštjana Simona, izvedene v živo.** Vsaka kopel je
+trajala približno 45 minut in je bila razdeljena na **tri približno enako dolge
+dele**: PRVI DEL, DRUGI DEL in TRETJI DEL. Kompozicije so povezovale načela
+zvočnega prekrivanja oz. maskiranja (frekvence po nasvetu dr. B. Getzy) z umetniškimi prijemi, ki uvajajo dinamično in tekstualno raznolikost.
+
+**Razpored.** Osem tedenskih sej, 24. februar – 14. april 2026.
+**Prizorišče.** Velika dvorana, Glasbena šola Nova Gorica.
+
+## Naknadno kodiranje zvočne vsebine
+
+Po zaključku zbiranja podatkov je avtor (B. Simon) v prosti obliki opisal
+zvočno vsebino vsakega od 24 delov (osem sej x trije deli). Iz teh opisov je
+bila izpeljana **binarna kodirna shema** z dvema kategorijama elementov:
+
+- **Glasbeni elementi** (akordi, sekvence, drone, gamelan, kalimba, klarinet,
+  saksofon, ritmika, sintetska melodija, gongi ipd.) — `r if (HAS_ELEM) sum(elem_summary$element_type == "musical") else "12"` različnih elementov.
+- **Elementi prekrivanja** (črički, beli šum, voda, dež, ptiči, prasketanje
+  vinila, kraguljčki, terenski posnetki ipd.) — `r if (HAS_ELEM) sum(elem_summary$element_type == "masking") else "13"` različnih elementov.
+
+Polni opisi avtorja so v prilogi C. Strojno-berljiva oblika kodirne sheme
+(`data/raw/composition_coding.csv`) pa je vir za vse analize na ravni elementov v
+§5.5.
+
+**Pomembna omejitev.** Kodiranje je bilo izvedeno **naknadno (post hoc)** in s
+strani **istega avtorja, ki je kompozicije izvajal**. To predstavlja možno
+sistematično pristranskost; analize na ravni elementov je treba obravnavati
+zgolj kot deskriptivne in hipotetske, ne kot dokazovanje učinkovitosti
+posameznih zvočnih sestavin.
+
+**Splošna opomba avtorja.** Moduliran beli šum je bil dodajan in odvzemal skozi
+celotno sejo, v približno 15-minutnih sklopih, kar pomeni, da gre za skoraj
+vseprisotno komponento. Eksplicitno je zato kodiran le v delih, kjer ga je
+avtor izrecno omenil kot dominantni element prekrivanja.
+
+## Udeleženci
+
+Odprto vabilo prek socialnih omrežij (Zavod Tinitus), brez formalnega presejanja
+poleg samoporočanega tinitusa in starostne meje 18 let. Pisno
+informirano soglasje je bilo pridobljeno ob prvem obisku.
+
+## Vprašalnik
+
+Enostranski pisni vprašalnik je bil izpolnjen ob vsaki seji.
+
+**Pred sejo (ob prihodu):**
+
+1. Pogostost tinitusa: stalno / občasno.
+2. Tip tinitusa (večodgovorno): piskanje / šumenje / brenčanje / bobnenje / drugo.
+3. Resnost v vsakdanjem življenju (5-stopenjska lestvica): sploh me ne moti …
+   ekstremno moteč.
+4. Prejšnja uporaba zvočnih maskerjev (4-stopenjska lestvica): nikoli, enkrat,
+   večkrat, redno.
+
+**Po vsakem delu (3×):**
+
+- Afektivna valenca (0–10): zelo neprijetno … zelo prijetno.
+- Vpliv na tinitus (0–10): opazno poslabšanje … opazno olajšanje (5 = ni
+  spremembe).
+- Odprto besedilo: opis izkušnje.
+
+**Po koncu seje:**
+
+5. Splošno doživetje (5-stopenjska emoji lestvica).
+6. Zavedanje tinitusa med kopeljo (tristopenjsko): sploh ne / včasih / tekom
+   celotne kopeli.
+
+## Etični vidiki
+
+Informirano soglasje, pojasnjeno, da gre za raziskavo in ne za zdravstveno
+obravnavo, možnost umika kadar koli, brez zbiranja identifikacijskih podatkov v
+samem vprašalniku, obdelava skladno z GDPR. Sofinancer (Asociacija) je nadziral
+projekt; formalne presoje s strani etične komisije nismo izvajali, kar je v
+slovenskem kontekstu raziskav umetnost-zdravje ustaljena praksa za pilotne
+študije.
+
+## Analitični pristop
+
+Vse kvantitativne analize so **deskriptivne in eksploratorne**. Inferenčnih
+testov ne uporabljamo za potrditev hipotez, ker (a) hipotez ni bilo, (b)
+ omejitve (samoizbira, brez kontrolne skupine, ponovljene meritve istih
+oseb brez identifikatorja) onemogočajo kavzalno sklepanje, in (c) podvzorci
+za posamezne podskupine so premajhni za smiselno statistično moč.
+
+Kjer kljub temu poročamo o povezavah (npr. Spearmanov $\rho$ med prijetnostjo in
+vplivom), to služi le **kvantifikaciji opisne povezanosti**, brez sklepov o
+kavzalnosti ali pomembnosti.
+
+Kvalitativna analiza prostih opisov temelji na frekvenčni analizi lem s pomočjo
+slovenskega modela UDPipe (jezikovni model SSJ). Štiri vrstice z italijanskimi
+odgovori so iz besedilne analize izključene do prevoda; po prevodu se analiza
+ponovi brez sprememb v kodi.
+
+**Programska oprema.** R 4.5, večinoma osnovna grafika; alluvialne diagrame
+(Sankey) rišemo s paketom `ggalluvial`, ker zanje v osnovnem R-u ni
+ekvivalenta. Izhodni format je Microsoft Word (.docx). Vsa analiza je verzionirana in reproducibilna; izvorna koda je objavljena na githubu. 
+
+# Rezultati
+
+## Opis vzorca
+
+```{r sample-size}
+sess_n <- as.data.frame(table(ps$session))
+names(sess_n) <- c("Seja", "N odgovorov")
+sess_n$Datum <- c("24. 2.", "3. 3.", "10. 3.", "17. 3.",
+                  "24. 3.", "31. 3.", "7. 4.", "14. 4.")[as.integer(sess_n$Seja)]
+sess_n <- sess_n[, c("Seja", "Datum", "N odgovorov")]
+knitr::kable(sess_n,
+             caption = "Število izpolnjenih vprašalnikov po sejah.",
+             align = "lcc")
+```
+
+Skupno smo prejeli **`r N_OBS` izpolnjenih vprašalnikov**. Iz seznamov
+prisotnosti (priloga) ocenjujemo, da je v osmih sejah sodelovalo
+**približno `r sg$n_unique_attendees` različnih oseb**, kar pomeni povprečje
+`r sprintf("%.2f", sg$mean_sessions_per_p)` obiskov na osebo. Razpon je bil
+širok: `r sg$n_attended_once` oseb je sodelovalo le enkrat, `r sg$n_attended_4plus`
+oseb pa štirikrat ali večkrat. Ta neenakomerna porazdelitev predstavlja
+najpomembnejšo omejitev pri interpretaciji rezultatov (glej §6). 
+
+Navzkrižna primerjava števila izpolnjenih vprašalnikov in podpisov na listah prisotnosti pokaže neto razliko štirih vprašalnikov, ki nimajo ustrezne podpisne sledi (v dveh sejah pa je podpisov celo več kot vprašalnikov). Ocena 64 različnih udeležencev je torej spodnja meja; dejansko število je verjetno 65–68. Povprečje 1,78 obiskov na osebo se nanaša na podpisne podatke; če izračunamo na vse vprašalnike, znaša 1,84.
+
+```{r demographics-plot, fig.cap="Opis vzorca: pogostost tinitusa, resnost, prejšnje izkušnje z maskerji, podtipi.", fig.width=8, fig.height=7}
+plot_sample_demographics(ps)
+```
+
+**Profil vzorca.** Vzorec je močno nagnjen k osebam s **stalnim** tinitusom
+(`r sum(ps$freq == "stalno", na.rm = TRUE)` od `r N_OBS` opazovanj; ostali so
+občasni). Glede resnosti prevladujejo zmerne in lažje oblike, ekstremno močnih
+oblik je le `r sum(ps$severity == "ekstremno", na.rm = TRUE)` opazovanj.
+Najpomembnejša lastnost vzorca je, da **velika večina nikoli ni uporabljala
+zvočnih maskerjev**
+(`r round(100 * mean(ps$masker_exp == "nikoli", na.rm = TRUE))` %); intervencija
+torej naslavlja populacijo, ki ji ta pristop še ni domač. Pri zaznavi tinitusa
+prevladujeta *šumenje* in *piskanje*, sledita *brenčanje* in *bobnenje*; pri
+mnogih udeležencih sočasno nastopa več tipov, zato vsote presegajo 100 %.
+
+## Splošno doživetje seje (Q5, Q6)
+
+```{r overall-charts, fig.cap="Splošna ocena prijetnosti seje (levo, Q5) in zavedanje tinitusa med kopeljo (desno, Q6). Vmesne vrednosti pri Q5 (-1,5 / -0,5 / 0,5 / 1,5) izvirajo iz vrstic, kjer je udeleženec obkrožil dve sosednji oceni.", fig.width=10, fig.height=4.5}
+par(mfrow = c(1, 2), mar = c(5, 4, 3, 1))
+
+# Q5: overall valence (-2..2 with halves)
+val_tab <- table(factor(
+  ps$overall_valence,
+  levels = c(-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2)
+))
+val_pal <- grDevices::colorRampPalette(c("#b2182b", "#bdbdbd", "#2166ac"))(9)
+barplot(
+  val_tab,
+  col = val_pal,
+  border = NA,
+  ylim = c(0, max(val_tab) * 1.1),
+  main = "Splošna ocena prijetnosti seje (Q5)",
+  ylab = "Število odgovorov",
+  xlab = "Ocena (-2 = zelo neprijetno, +2 = zelo prijetno)",
+  las = 1
+)
+
+# Q6: awareness (0, 0.5, 1)
+aw_tab <- table(factor(ps$awareness, levels = c(0, 0.5, 1)))
+names(aw_tab) <- unname(SLO_LABELS$awareness[c("0", "0.5", "1")])
+barplot(
+  aw_tab,
+  col = c("#4daf4a", "#fdae61", "#b2182b"),
+  border = NA,
+  ylim = c(0, max(aw_tab) * 1.1),
+  main = "Zavedanje tinitusa med kopeljo (Q6)",
+  ylab = "Število odgovorov",
+  las = 1,
+  cex.names = 0.9
+)
+par(mfrow = c(1, 1))
+```
+
+**Splošno doživetje** je v veliki večini ocenjeno pozitivno: prevladujejo
+ocene *prijetno* (1) in *zelo prijetno* (2), negativnih ocen je malo. To kaže
+na visoko sprejemljivost umetniško komponiranega zvočnega okolja kot
+intervencije, čeprav samo po sebi ne pove ničesar o vplivu na tinitus.
+
+**Zavedanje tinitusa med kopeljo** je razdeljeno: pri približno
+`r round(100 * mean(ps$awareness == 1, na.rm = TRUE))` % opazovanj so
+udeleženci tinitus zaznavali skozi celotno sejo, pri
+`r round(100 * mean(ps$awareness == 0.5, na.rm = TRUE))` % le občasno, in pri
+`r round(100 * mean(ps$awareness == 0, na.rm = TRUE))` % ne. Tudi v skupini, ki
+je tinitus zaznavala ves čas, je bilo doživetje praviloma prijetno —
+prekrivanje torej ni nujno popolno, da bi bila izkušnja vrednotena ugodno.
+
+## Vzorci po sejah (heatmapi)
+
+```{r heatmap-valence, fig.cap="Povprečna ocena prijetnosti po seji in delu. Modra: prijetno; rdeča: neprijetno; bela: nevtralno (5).", fig.width=8, fig.height=5}
+plot_heatmap_session_part(pl, outcome = "valence",
+                          title = "Povprečna prijetnost")
+```
+
+```{r heatmap-impact, fig.cap="Povprečna ocena vpliva na tinitus po seji in delu. Modra: olajšanje; rdeča: poslabšanje; bela: brez spremembe (5).", fig.width=8, fig.height=5}
+plot_heatmap_session_part(pl, outcome = "impact",
+                          title = "Povprečen vpliv na tinitus")
+```
+
+**Prijetnost** je v vseh 24 celicah visoka in razmeroma enotna: povprečja se
+gibljejo med
+`r sprintf("%.1f", min(stats::aggregate(pl$valence, by = list(pl$session, pl$part), FUN = mean, na.rm = TRUE)$x))`
+in
+`r sprintf("%.1f", max(stats::aggregate(pl$valence, by = list(pl$session, pl$part), FUN = mean, na.rm = TRUE)$x))`
+in nobene del ni bil ocenjen kot negativen. Estetska sprejemljivost
+kompozicij je torej zelo visoka skozi vse seje.
+
+**Vpliv na tinitus** je bolj raznolik. Vsa povprečja ostajajo nad nevtralno
+ravnijo 5 (kar pomeni, da v povprečju nobena seja ni povzročila poslabšanja),
+a razlike med deli in sejami so večje. Najnižje vrednosti vpliva so v
+**prvih delih**, kar je razumljivo (prvi del seje je za udeležence prilagoditev
+na zvočno okolje), in v **zadnji seji** (VIII), kjer so vsi trije deli ocenjeni
+nižje kot povprečno. Najvišje vrednosti vpliva so v drugih in tretjih delih
+sej, ki vključujejo predvsem mirne sintetske akorde in sekvence.
+
+
+## Razlike po podskupinah
+
+Prijetnost in vpliv kopeli na tinitus razdelimo po **značilnostih tinitusa**
+udeležencev: podtipu (Q2), resnosti v vsakdanjem življenju (Q3), pogostosti
+zaznave (Q1) in zavedanju tinitusa med kopeljo (Q6). Vsak udeleženec prispeva
+tri opazovanja (eno na del), ki jih pri tej analizi združimo skupaj. Skupine z
+manj kot 10 opazovanji izpustimo. V poročilu ne izvajamo formalnih
+inferenčnih testov (glej §4.7).
+
+```{r subgroup-type-impact, fig.cap="Vpliv na tinitus po primarnem podtipu tinitusa.", fig.width=9, fig.height=5}
+plot_subgroup_box(pl, group = "primary_type", outcome = "impact")
+```
+
+```{r subgroup-type-valence, fig.cap="Prijetnost po primarnem podtipu tinitusa.", fig.width=9, fig.height=5}
+plot_subgroup_box(pl, group = "primary_type", outcome = "valence")
+```
+
+```{r subgroup-severity-impact, fig.cap="Vpliv na tinitus po stopnji resnosti.", fig.width=9, fig.height=5}
+plot_subgroup_box(pl, group = "severity", outcome = "impact")
+```
+
+```{r subgroup-severity-valence, fig.cap="Prijetnost po stopnji resnosti.", fig.width=9, fig.height=5}
+plot_subgroup_box(pl, group = "severity", outcome = "valence")
+```
+
+```{r subgroup-freq-impact, fig.cap="Vpliv na tinitus po pogostosti zaznave tinitusa (stalno / občasno).", fig.width=7, fig.height=5}
+plot_subgroup_box(pl, group = "freq", outcome = "impact")
+```
+
+```{r subgroup-awareness-impact, fig.cap="Vpliv na tinitus po zavedanju tinitusa med kopeljo (Q6).", fig.width=7, fig.height=5}
+plot_subgroup_box(pl, group = "awareness_cat", outcome = "impact")
+```
+
+**Razlage podskupinskih razlik.**
+
+- **Podtip tinitusa.** Razlike med podtipi so pri prijetnosti majhne, pri
+  vplivu na tinitus pa se pokaže smiseln vzorec: **najnižje povprečje
+  olajšanja je v skupini s piskanjem** (mediana ~6), medtem ko šumenje,
+  brenčanje in mešani tipi dosegajo medijane okoli 7–8. To je klinično
+  smiselno: piskanje je ozkofrekvenčna tonalna zaznava, ki jo je s širokim
+  zvočnim materialom teže prekriti kot širokopasovne percepte (šumenje) ali
+  večpasovne kombinacije.
+- **Resnost.** Resnost je glavna delilna lastnost: udeleženci z **zelo** ali
+  **ekstremno** motečim tinitusom v vsakdanjem življenju poročajo o **nižjem
+  povprečnem olajšanju** kot tisti z lažjimi oblikami, in — kar je še
+  pomembnejše — **vse negativne ocene splošnega doživetja seje (§5.8)
+  izhajajo izključno iz tega dela vzorca**, v presečišču s podtipom in
+  pogostostjo.
+- **Pogostost zaznave.** V per-part oceni vpliva razlik med *stalno* in
+  *občasno* skupino ni. Pri splošni oceni seje pa je razlika izrazita:
+  **vseh šest neprijetno ocenjenih sej (§5.8) prihaja iz skupine *stalno***,
+  iz skupine *občasno* nobena. Pogostost torej ne moderira povprečnega
+  olajšanja, je pa del profila, znotraj katerega se zgodijo negativne
+  izkušnje.
+- **Zavedanje med kopeljo (Q6).** Skupina, ki je tinitus zaznavala skozi vso
+  kopel, poroča o nižjem olajšanju kot skupini, ki sta tinitus zaznavali le
+  občasno ali sploh ne — kar je skoraj tavtološko (kdor ga je še slišal, ga je
+  prekrivanje manj odpravilo), a potrjuje notranjo konsistentnost meritev.
+
+## Analiza po zvočnih elementih
+
+Heatmapi v §5.3 prikazujejo povprečja na ravni *seja x del*. Tukaj povprečja
+razdeljujemo po **zvočnih sestavinah**, kot jih je naknadno kodiral avtor
+kompozicij (glej §4.3 za omejitve). Cilj je dveh vrst: (1) prepoznati elemente,
+ki so pri poslušalcih povezani z razmeroma višjim oziroma nižjim povprečnim
+vplivom na tinitus, in (2) preveriti, ali se kodiranje avtorja prekriva z
+besedami, ki jih udeleženci uporabljajo v prostih opisih.
+
+### Povprečen vpliv in prijetnost po elementu
+
+```{r elem-impact-musical, fig.cap="Povprečen vpliv na tinitus po glasbenih elementih. Modra: nad globalnim povprečjem; rdeča: pod njim. Črtkana črta označuje globalno povprečje. Elementi s prisotnostjo v vsaj 2 delih.", fig.width=8, fig.height=5, eval=HAS_ELEM}
+plot_element_means(elem_summary, GRAND$mean_impact,
+                   type = "musical", outcome = "impact",
+                   min_n_parts = 2L)
+```
+
+```{r elem-impact-masking, fig.cap="Povprečen vpliv na tinitus po elementih prekrivanja. Beli šum je prisoten v skoraj vseh delih in zato služi kot praktično izhodišče.", fig.width=8, fig.height=5, eval=HAS_ELEM}
+plot_element_means(elem_summary, GRAND$mean_impact,
+                   type = "masking", outcome = "impact",
+                   min_n_parts = 2L)
+```
+
+```{r elem-valence-musical, fig.cap="Povprečna prijetnost po glasbenih elementih.", fig.width=8, fig.height=5, eval=HAS_ELEM}
+plot_element_means(elem_summary, GRAND$mean_valence,
+                   type = "musical", outcome = "valence",
+                   min_n_parts = 2L)
+```
+
+```{r elem-valence-masking, fig.cap="Povprečna prijetnost po elementih prekrivanja.", fig.width=8, fig.height=5, eval=HAS_ELEM}
+plot_element_means(elem_summary, GRAND$mean_valence,
+                   type = "masking", outcome = "valence",
+                   min_n_parts = 2L)
+```
+
+**Opomba o velikosti učinkov.** Razpon povprečnih ocen vpliva med vsemi
+kodiranimi elementi je `r if (HAS_ELEM) sprintf("%.1f", diff(range(elem_summary$mean_impact, na.rm=TRUE))) else "1,5"`
+točke (med `r if (HAS_ELEM) sprintf("%.1f", min(elem_summary$mean_impact, na.rm=TRUE)) else "6,5"`
+in `r if (HAS_ELEM) sprintf("%.1f", max(elem_summary$mean_impact, na.rm=TRUE)) else "8,0"`),
+prijetnost pa je še bolj enotno visoka. Brez kontrolne skupine in ob številčno
+omejenih podskupinah te razlike interpretiramo kot kvalitativno hipotetske,
+ne kot dokaze prednosti določenih zvokov.
+
+**Kateri elementi izstopajo.** Med **glasbenimi elementi** so nad povprečjem
+*gamelan* (+0,40), *gongi* (+0,20) in *sintetizator* (+0,13). Ti se pogosto
+pojavljajo skupaj (zlasti v sejah II–IV), zato jih statistično ne moremo
+ločiti med seboj. Pod povprečjem so *akordi* (–0,13), *ritmika* (–0,19) in
+najizraziteje *kalimba* (–0,62), pri kateri pa je n majhen (2 dela).
+
+Med **elementi prekrivanja** so najugodnejši *moduliran beli šum* (+0,51),
+*voda* (+0,36), *prasketanje vinila* (+0,23) in *posnetek jutra* (+0,18).
+Rezultat za *prasketanje vinila* je vsebinsko zanimiv: zvok, za katerega
+bi pričakovali, da bo dojet kot moteč, se v podatkih kaže kot ugoden — vsaj
+pri jakostih, v katerih je bil uporabljen. Najmanj ugoden je *mečkanje
+vrečke* (–0,67), pod povprečjem so še *beli šum* (–0,15), *kraguljčki*
+(–0,22) in *terenski posnetki* (–0,25). *Beli šum* je zaradi prisotnosti v
+14 od 24 delov praktično izhodišče celotnega vzorca; tudi sam rahlo pod
+povprečjem, kar pomeni, da njegova vloga ni transformativna, temveč
+**stabilizacijska** — kot zvočna podlaga, na kateri se gradi.
+
+Vse razlike ostajajo znotraj približno ene točke na 10-stopenjski skali,
+zato jih razumemo kot **kvalitativne usmeritve** za prihodnje raziskave, ne
+kot potrjene učinke posameznih sestavin.
+
+**Pomembno: jakost je verjetno bolj pomembna od vsebine.** Sam avtor
+kompozicij je v komunikaciji opozoril, da je bila pri praktičnem delovanju
+**jakost** posameznih elementov pomembnejši dejavnik od izbire elementov: če
+ga je bilo preveč (npr. preveč belega šuma), je element postal neprijeten, če
+ga je bilo malo, pa se je lepo zlil v zvočno celoto. Trenutna kodirna shema te
+dimenzije ne zajema; binarna prisotnost je posledično grob približek. To
+omejitev je treba upoštevati pri vsaki interpretaciji elementarne ravni in
+predstavlja jasen napotek za prihodnji raziskovalni instrument: dinamika
+jakosti vsakega elementa v času bi morala biti del kodirne sheme.
+
+### Skladnost avtorjevega kodiranja z opisi udeležencev
+
+Za vsak element, ki ima v slovenščini prepoznavno besedno signaturo (npr.
+*dež*, *voda*, *ptiči*, *vinil*), preverjamo, ali ga udeleženci v svojih
+prostih opisih dejansko **omenjajo bolj pogosto v tistih delih, kjer ga je
+avtor kodiral kot prisotnega**, kot v delih, kjer ga ni.
+
+Spodnji graf za vsak element prikazuje dva odstotka:
+
+- **Polna modra pika**: delež opisov, ki element omenjajo, med deli, kjer je
+  bil element po avtorju **prisoten**.
+- **Prazna pika**: enak delež med deli, kjer element **ni bil prisoten**.
+
+Vrzel med pikama (anotirana na desni v odstotnih točkah) je **specifičnost
+zaznave**. Pozitivna vrzel pomeni, da so udeleženci ta element prepoznavali in
+o njem pisali. Vrzel blizu nič pomeni, da element bodisi ni izstopal iz
+zvočne podobe bodisi ni del besednjaka, s katerim udeleženci opisujejo svoje
+doživljanje. Rumeno označene vrstice ($\geq 2$ odstotne točke razlike)
+izpostavljajo elemente, kjer se kodiranje in opisi smiselno prekrivajo.
+
+```{r concordance-plot, fig.cap="Skladnost med kodirano prisotnostjo elementa in njegovo eksplicitno omembo v opisih udeležencev. Razlika med polno in prazno piko je 'specifičnost zaznave' (anotirana desno).", fig.width=10, fig.height=5.5, eval=HAS_ELEM}
+plot_concordance(concordance, min_n_present = 10L)
+```
+
+**Glavni vzorec.** Pri večini elementov sta oba deleža blizu nič — udeleženci
+specifičnih zvočnih sestavin v prostih opisih praviloma **ne navajajo**. Namesto
+tega opisujejo **afektivne in telesne občutke** (sproščujoče, prijetno, umiritev,
+težko poslušati ipd.). Le pri elementih z izrazito konkretno zvočno identiteto
+— *voda*, *prasketanje vinila*, *ptiči*, *beli šum* — opazimo opazno razliko
+med deli s prisotnim in odsotnim elementom. To je samo po sebi pomembna
+ugotovitev: pri opisovanju zvočne kopeli ima afektivni jezik prednost pred
+deskriptivnim naštevanjem zvokov.
+
+## Povezava med prijetnostjo in olajšanjem
+
+Ali "lepo poslušati" pomeni tudi "manj tinitusa"? Razsevni diagram pokaže
+povezavo med oceno prijetnosti in oceno vpliva na tinitus na ravni
+posameznega dela. Spodaj prikažemo dve verziji: točke obarvane po **resnosti
+tinitusa** in po **podtipu tinitusa**, s ločenimi regresijskimi premicami in
+Spearmanovim $\rho$ za vsako podskupino.
+
+```{r valence-impact-severity, fig.cap="Prijetnost vs vpliv na tinitus, po stopnji resnosti tinitusa. Vsaka točka je en del ene seje. Regresijska premica in Spearmanov rho sta izračunana ločeno za vsako stopnjo resnosti.", fig.width=10, fig.height=5}
+plot_valence_vs_impact(pl, group = "severity")
+```
+
+```{r valence-impact-type, fig.cap="Prijetnost vs vpliv na tinitus, po podtipu tinitusa.", fig.width=10, fig.height=5}
+plot_valence_vs_impact(pl, group = "primary_type")
+```
+
+**Razlaga.** Združeno čez ves vzorec sta prijetnost in vpliv na tinitus
+**zmerno do močno pozitivno povezana** (Spearmanov ρ ≈ 0,70): deli, ki so
+prijetnejši, so v povprečju povezani tudi z večjim olajšanjem. A pojava
+nista identična — gre za vzporedno ocenjevanje, ne za isto dimenzijo, in
+povezava se po podskupinah izrazito spreminja.
+
+Po resnosti povezava ni monotona. Najšibkejša je presenetljivo pri
+skupini Malo moteč (ρ ≈ 0,44, naklon ≈ 0,48), medtem ko tri najtežje
+skupine (zmerno, zelo, ekstremno moteč) dosegajo dosledno močne
+povezave (ρ med 0,79 in 0,91). Predpostavka, da pri težjih oblikah
+prijetnost slabše napoveduje olajšanje, se torej ne potrdi — če kaj,
+je razmerje pri težjih oblikah celo bolj urejeno. Ena razlaga: pri osebah,
+ki tinitus v vsakdanu komaj opazijo (sploh me ne moti, malo moteč),
+imajo razlike v olajšanju manj jasen referenčni okvir, kar lahko šibi
+povezavo s prijetnostjo. Pri težjih oblikah je olajšanje opaznejša količina
+in jo udeleženci doslednejše vrednotijo skupaj s prijetnostjo.
+
+Po podtipu se kaže dramatičen kontrast. Pri piskanju je povezava skoraj
+ploska (naklon ≈ 0,16, ρ ≈ 0,31): tudi pri zelo prijetnih delih olajšanje
+ne sledi prijetnosti. Pri šumenju, brenčanju in več tipih so nakloni
+strmi (0,74–1,08) in povezave močne (ρ 0,62–0,87). Ta ugotovitev se ujema
+z opažanjem iz boxplotov v §5.4: piskanje izstopa kot podtip, pri katerem je
+prekrivanje načeloma teže doseči, in zato tudi prijetnost glasbe v sebi
+ne pomeni avtomatsko olajšanja. Klinično je to skladno z naravo zaznave —
+ozkofrekvenčni ton je akustično težko prekriti ne glede na to, kako prijetna
+je glasbena podlaga.
+
+## Kvalitativna analiza opisov
+
+Pri vsakem delu seje udeleženci poleg dveh številčnih ocen — **prijetnosti**
+(0 = zelo neprijetno do 10 = zelo prijetno) in **vpliva na tinitus**
+(0 = opazno poslabšanje, 5 = brez spremembe, 10 = opazno olajšanje) — zapišejo
+še kratek opis izkušnje v prosti obliki.
+
+Spodnja analiza najprej prikaže najpogostejše leme (osnovne oblike besed) v
+celotnem korpusu opisov. Nato za vsako lemo, ki se pojavi v vsaj petih
+opisih, izračuna **povprečno prijetnost** in **povprečen vpliv** vseh delov,
+v katerih je bila lema uporabljena. Tako pridemo do besed, ki so povezane z
+najugodnejšimi (oziroma najmanj ugodnimi) odzivi udeležencev — koristen
+pripomoček za triangulacijo številčnih ugotovitev. Lematizacijo izvajamo z
+UDPipe (slovenski jezikovni model SSJ); izključimo splošne pomožne besede
+(*biti*, *imeti*, *lahko*, *del* ipd.).
+
+```{r text-presence, eval=!HAS_TEXT, results="asis"}
+cat("> *Kvalitativna analiza še ni bila izvedena. Pred izvedbo skripta `03_textanalysis.R` ta razdelek ostaja prazen.*\n\n")
+```
+
+```{r text-overall, eval=HAS_TEXT}
+top30 <- utils::head(freq_overall, 30)
+knitr::kable(top30,
+             caption = "30 najpogostejših lem v opisih izkušnje (vse besedne vrste; italijanski odgovori v prevodu Boštjana S.).")
+```
+
+```{r text-by-impact, eval=HAS_TEXT}
+top_relief <- utils::head(
+  lemma_scores[order(-lemma_scores$impact), ],
+  15
+)
+top_aggrav <- utils::head(
+  lemma_scores[order(lemma_scores$impact), ],
+  15
+)
+knitr::kable(top_relief[, c("lemma", "n_docs", "valence", "impact")],
+             digits = 2,
+             caption = "Leme, povezane z najvišjimi povprečnimi ocenami olajšanja (vsaj 5 dokumentov).")
+knitr::kable(top_aggrav[, c("lemma", "n_docs", "valence", "impact")],
+             digits = 2,
+             caption = "Leme, povezane z najnižjimi povprečnimi ocenami olajšanja (vsaj 5 dokumentov).")
+```
+
+**Vsebinski vzorec.** Najpogostejše leme so pričakovane (*zvok*, *tinitus*,
+*delo*, *prijetno*), vendar pa se pri stratifikaciji po vplivu na tinitus
+pokaže pomenljiv kontrast:
+
+- **Leme, povezane z olajšanjem**, gravitirajo k besednjaku **sprostitve in
+  spanca**: *sproščujoč/sproščujoče*, *umiriti*, *zaspati*, *narava*, *lep*,
+  *zamaskirati*. To je jezik *odhoda iz zavestne pozornosti* —
+  udeleženci poročajo o najboljših izkušnjah takrat, ko jih je zvok "odnesel
+  drugam", ne pa, ko so analitično poslušali.
+- **Leme, povezane s poslabšanjem**, so semantično povezane z **napornim
+  poslušanjem in izstopajočimi zvoki**: *pozornost*, *poslušanje*, *glasno*,
+  *vibracija*, *moteč*, *močen*, *tona* (visoki toni se v opisih večkrat
+  pojavljajo kot moteči), *tinitus* (kadar ga udeleženec eksplicitno omeni,
+  ga je očitno še slišal).
+- **Konsistentnost s številčnimi ocenami:** lema *tinitus* ima povprečen
+  vpliv 6,0 (komaj nad nevtralno), kar pomeni, da kadar udeleženec v opisu
+  eksplicitno navede besedo "tinitus", je olajšanje minimalno. Nasprotno
+  lema *zaspati* (n=12) prinese povprečen vpliv 8,0 — kadar udeleženec opiše
+  izkušnjo z besedami spanja, je olajšanje močno.
+
+To **podpre** ugotovitev iz analize elementov (§5.5): mehanizem
+delovanja kompozicij ni v konkretnih zvočnih sestavinah, temveč v
+**afektivnem premiku** — v tem, ali kompozicija uspe poslušalca odpeljati v
+sproščeno, neaktivno-poslušajoče stanje. Slabi dejavniki za doseganje tega so
+**glasnost, visoke frekvence in vibracijska intenzivnost**; dobri so
+**stabilne in mirne sintetske teksture, naravni zvoki in kontinuirana, mehka teksturna podlaga**.
+
+## Integrativni pregled (alluvialni diagram)
+
+```{r sankey-3d-with-freq, fig.cap="Alluvialni diagram: podtip tinitusa -> pogostost (stalno/občasno) -> resnost -> splošna ocena seje. Tokovi so obarvani glede na splošno doživetje seje.", fig.width=10, fig.height=6.5}
+suppressPackageStartupMessages({
+  library(ggalluvial)
+  library(ggplot2)
+})
+
+sankey_df2 <- ps[!is.na(ps$primary_type) &
+                   !is.na(ps$freq) &
+                   !is.na(ps$severity) &
+                   !is.na(ps$overall_valence), ]
+sankey_df2$valence_band <- cut(
+  sankey_df2$overall_valence,
+  breaks = c(-2.5, -0.5, 0.5, 2.5),
+  labels = c("Neprijetno", "Nevtralno", "Prijetno"),
+  include.lowest = TRUE
+)
+
+agg_sankey2 <- as.data.frame(table(
+  podtip  = sankey_df2$primary_type,
+  pogost  = sankey_df2$freq,
+  resnost = sankey_df2$severity,
+  doziv   = sankey_df2$valence_band
+))
+agg_sankey2 <- agg_sankey2[agg_sankey2$Freq > 0, ]
+
+levels(agg_sankey2$podtip) <- c(
+  unname(SLO_LABELS$type[c("piskanje","sumenje","brencanje","bobnenje","drugo")]),
+  "Več tipov"
+)
+levels(agg_sankey2$pogost)  <- unname(SLO_LABELS$freq[levels(agg_sankey2$pogost)])
+levels(agg_sankey2$resnost) <- unname(SLO_LABELS$severity[1:5])
+
+ggplot(agg_sankey2,
+       aes(y = Freq, axis1 = podtip, axis2 = pogost,
+           axis3 = resnost, axis4 = doziv)) +
+  geom_alluvium(aes(fill = doziv), width = 1/8, alpha = 0.75) +
+  geom_stratum(width = 1/8, fill = "grey92", color = "grey30") +
+  geom_text(stat = "stratum", aes(label = after_stat(stratum)), size = 2.8) +
+  scale_x_discrete(limits = c("Podtip", "Pogostost", "Resnost", "Doživetje"),
+                   expand = c(0.07, 0.05)) +
+  scale_fill_manual(values = c("Neprijetno" = "#b2182b",
+                               "Nevtralno"  = "#bdbdbd",
+                               "Prijetno"   = "#2166ac")) +
+  labs(y = "Število odgovorov", fill = "Splošna ocena") +
+  theme_minimal(base_size = 10) +
+  theme(panel.grid = element_blank())
+```
+
+**Razlaga alluvialnega diagrama.** Diagram integrira kvantitativne ugotovitve
+v eno sliko. Najopaznejši vzorec je **izrazita koncentracija neprijetnih
+(rdečih) doživetij v zelo ozkem profilu udeležencev**. Vseh šest sej, ki so
+bile na koncu ocenjene kot neprijetne, prihaja iz **iste presečne skupine**:
+
+- **Tip:** vsi v skupini *več tipov sočasno* (0 iz katerega koli enotnega
+  podtipa).
+- **Pogostost:** vsi v skupini *stalno* (0 iz skupine *občasno*).
+- **Resnost:** vsi v skupinah *zelo moteč* ali *ekstremno moteč*.
+
+Konkretno: med 8 udeleženci, ki so v vsakdanu označili tinitus kot
+*ekstremno moteč*, jih je polovica (4 od 8) sejo ocenila kot neprijetno;
+med 15, ki so označili *zelo moteč*, sta to ocenila 2; vse ostale podskupine
+nimajo nobenega negativnega doživetja. **Ranljiv profil** je torej
+udeleženec s sočasno več zvočnimi zaznavami, stalno prisotnimi in zelo do
+ekstremno motečimi v vsakdanjem življenju — **19 od 118 opazovanj (16 %)**.
+Znotraj tega profila je tretjina (6 od 19) sejo ocenila kot neprijetno;
+zunaj njega ni nobene negativne ocene (0 od 99). Pri vseh drugih profilih
+je doživetje seje praviloma prijetno ali vsaj nevtralno.
+
+Pomembna metodološka opomba: trojni presek (tip x pogostost x resnost)
+temelji na zelo majhnem številu negativnih primerov (6), zato ga
+obravnavamo kot **deskriptivno opažanje**, ne kot statistično utemeljen
+napovedni vzorec. Predstavlja pa jasno hipotezo za prihodnje nadzorovane
+raziskave — namreč, da je ta presečna skupina tista, pri kateri lahko
+klasična zvočna intervencija odpove ali postane celo neprijetna, in da je
+za njih morda potreben prilagojen pristop (nižja jakost, daljša uvodna
+prilagoditev, drugačen frekvenčni profil prekrivanja).
+
+# Razprava
+
+## Glavne ugotovitve
+
+1. **Visoka estetska sprejemljivost.** Vsa povprečja prijetnosti so v
+   pozitivnem območju (7–9 na lestvici 0–10); zelo neprijetnih ocen tako
+   rekoč ni. Umetniško komponiran zvok je kot intervencija dobro sprejet.
+2. **Zmerno, a stabilno olajšanje.** Povprečen vpliv na tinitus je v vseh
+   sejah in delih nad nevtralno ravnijo 5 (razpon povprečij okoli 5,6–8,3).
+   Pri večini udeležencev kompozicija delno prekriva tinitus, čeprav ga
+   redko popolnoma odstrani — kar potrjuje tudi podatek, da je
+   `r round(100 * mean(ps$awareness == 1, na.rm = TRUE))` % udeležencev tinitus
+   zaznavalo skozi celotno kopel.
+3. **Ozko opredeljen ranljiv profil.** Vseh šest negativno ocenjenih sej
+   (6 od 118) prihaja iz iste presečne skupine: udeleženci s **sočasno več
+   zvočnimi zaznavami**, **stalno prisotnim** tinitusom in **zelo do
+   ekstremno motečo** stopnjo v vsakdanu. Ta profil obsega 19 od 118
+   opazovanj (16 %), znotraj njega tretjina (6/19) ocenjuje sejo kot
+   neprijetno; zunaj njega ni nobene negativne ocene (0/99). To je
+   najbolj specifičen in najbolj uporaben rezultat poročila: nakazuje
+   točno tisto klinično podskupino, za katero **standardna izvedba zvočne
+   kopeli morda ni primerna brez prilagoditev**.
+4. **Pri *piskanju* prijetnost ne prinaša olajšanja.** Pri piskanju
+   (ozkofrekvenčna tonalna zaznava) je povezava med prijetnostjo in vplivom
+   na tinitus skoraj horizontalna (naklon ≈ 0,16, ρ ≈ 0,31), za razliko od
+   drugih podtipov, kjer je naklon strm (0,74–1,08). Mediana per-part
+   olajšanja je pri piskanju najnižja med vsemi podtipi (~6). Klinično
+   razumljivo: čist ton je akustično težko prekriti, ne glede na to, kako
+   prijetna je glasbena podlaga.
+5. **Vsebina elementov je manj pomembna od njihove jakosti.** Razpon
+   povprečij vpliva med vsemi kodiranimi zvočnimi elementi je le ~1,5
+   točke. Avtorjev komentar — da je v praksi *jakost* posameznih elementov
+   pomembnejša od njihove izbire — je skladen s temi podatki, in noben
+   posamezen "dober" zvok se ne izkaže kot ključen.
+6. **Beli šum sam po sebi ne dela razlike.** Najpogostejši "klasični"
+   masker je v podatkih rahlo pod globalnim povprečjem vpliva. Njegova
+   vloga v tej intervenciji je torej bolj *stabilizacijska podlaga* kot
+   aktivna sestavina — kar podpira temeljno tezo projekta, da odločilna
+   ni izbira maskerja, temveč širša kompozicijska ureditev.
+
+## Skladnost kvalitativnega in kvantitativnega gradiva
+
+Kvalitativna analiza prostih opisov se ne le ujema s številčnimi ocenami,
+temveč jih **dopolnjuje s pomembnim semantičnim vzorcem**. Najugodnejši
+odzivi gravitirajo k besednjaku **sprostitve in spanja**
+(*sproščujoče*, *umiritev*, *zaspati*, *narava*, *zamaskirati*); najmanj
+ugodni odzivi k besednjaku **napornega poslušanja in izrazitih zvokov**
+(*pozornost*, *poslušanje*, *glasno*, *vibracija*, *moteč*, *visoke
+frekvence*). To kaže, da kompozicija deluje, kadar uspe poslušalca
+**preusmeriti iz analitičnega v sproščeno poslušanje**. Hkrati analiza
+skladnosti kodiranja in opisov pokaže, da udeleženci specifičnih zvočnih
+elementov **praviloma ne navajajo** — opisujejo predvsem stanja in občutke,
+ne zvokov. Mehanizem delovanja torej deluje **bolj prek splošnega zvočnega
+gradiva** kot prek prepoznavnih posameznih elementov.
+
+## Omejitve
+
+Najpomembnejše omejitve so:
+
+1. **Brez kontrolne skupine.** Učinkov ni mogoče pripisati specifično
+   umetniški kompoziciji v primerjavi s splošnim učinkom udeležbe, družbenim
+   kontekstom, pričakovanjem ali placebom.
+2. **Brez longitudinalne sledljivosti.** Kumulativni učinki niso ocenjeni.
+3. **Samoizbira.** Udeleženci so se prijavili sami; rezultati se ne
+   posplošujejo nujno na celotno populacijo oseb s tinitusom.
+4. **Brez klinične potrditve diagnoze.** Tinitus je samoporočan.
+5. **Spremenljiv obisk.** Iz lista prisotnosti ocenjujemo, da je
+   `r sg$n_unique_attendees` oseb prispevalo `r N_OBS` opazovanj
+   (povprečje `r sprintf("%.2f", sg$mean_sessions_per_p)` na osebo).
+   Klastriranja ponovljenih meritev ne moremo natančno upoštevati, ker v
+   vprašalnikih ni identifikatorjev oseb.
+6. **Eno prizorišče, en avtor.** Ugotovitve so vezane na specifične
+   kompozicije in izvedbeni kontekst.
+7. **Velikost vzorca.** Skromna velikost vzorca omejuje občutljivost analiz
+   podskupin.
+8. **Visok delež manjkajočih ocen vpliva.** Približno tretjina vrstic nima
+   izpolnjene ocene vpliva za posamezni del. Vzrok ni znan; lahko gre za
+   subjektivno težavnost vrednotenja sprememb tinitusa med kopeljo.
+9. **Naknadno kodiranje zvočnih elementov.** Avtor kompozicij je kodirno
+   shemo izpeljal naknadno in iz lastnih opisov. Pri tem ni mogel zajeti
+   dinamike jakosti, ki je po njegovih lastnih besedah pomemben dejavnik.
+   Posledično je elementarna analiza opozoriti, ne ovrednotiti, posamezne
+   sestavine.
+
+## Implikacije za prihodnje raziskave
+
+- **Randomiziran nadzorovani poskus.** Naslednji korak je primerjava
+  umetniško komponiranega zvoka z generičnim maskerjem (npr. moduliran beli
+  šum) in z neaktivno kontrolo (npr. tišina ali pogovor). Le tak načrt
+  omogoča pripis učinkov specifično kompozicijskemu pristopu.
+- **Dinamika jakosti v kodirni shemi.** Prihodnji instrument naj poleg
+  prisotnosti vsakega elementa zajame tudi njegovo *jakost skozi čas* (npr.
+  z anotacijo časovnice ali z meritvami na avdio posnetku seje). Brez tega
+  ostajamo na ravni "kateri zvok", ne "kako močno in kdaj".
+- **Identifikacija udeležencev.** Pseudonimna oznaka v vprašalniku bi
+  omogočila analizo individualnih trajektorij in habituacije, ne da bi
+  ogrožala anonimnost. Pri pilotni raziskavi je smiselno tudi zbrati
+  predhodne klinične podatke (tip, etiologija, audiogram).
+- **Prilagojeni pristop za ranljiv profil.** Skupina z več zvočnimi
+  zaznavami, stalno prisotnim in zelo do ekstremno motečim tinitusom
+  je v tej študiji edina nosilka negativnih izkušenj. Specifične
+  kompozicije, prilagojene tej skupini (nižja jakost, manj visokih
+  frekvenc, daljša uvodna prilagoditev, morda krajše seje), bi bile
+  vredne ciljanega preizkusa, prav tako pa razmislek o predhodnem
+  presejanju za to skupino.
+- **Habituacija in trajnost.** Načrtovana ponovljena udeležba istih oseb v
+  daljšem časovnem oknu (npr. 8 tednov) z merjenjem osnovne ravni tinitusa
+  med sejami bi pokazala, ali ima intervencija učinek tudi izven seje same.
+
+# Zaključek
+
+Pilotna študija *Zvočni objem* kaže, da je umetniško komponiran zvok
+sprejemljiva in **estetsko visoko ocenjena** intervencija pri osebah s
+tinitusom, ki večinoma niso navajene na klasične zvočne maskerje. V
+povprečju poroča vzorec o **zmernem, a doslednem olajšanju** tinitusa med
+samo sejo, pri čemer je učinek **manj odvisen od izbire posameznih zvočnih
+elementov kot od njihove jakosti** ter od **afektivnega stanja** poslušalca
+(sprostitve oziroma usmerjene pozornosti).
+
+Najbolj specifična ugotovitev je opredelitev **ranljivega profila**:
+udeleženci s sočasno več zvočnimi zaznavami, stalno prisotnim in zelo do
+ekstremno motečim tinitusom predstavljajo 16 % vzorca in **edini razlog za
+negativno ocenjene seje** — znotraj tega profila je tretjina sej ocenjena
+kot neprijetna, zunaj njega ni nobene negativne ocene. Prav tako pri
+*piskanju* prijetnost glasbe skoraj ne napoveduje olajšanja, kar je
+skladno z naravo ozkofrekvenčne tonalne zaznave.
+
+Ugotovitve same po sebi ne dokazujejo terapevtske učinkovitosti, ponujajo
+pa jasno osnovo za naslednjo, nadzorovano fazo raziskave: ta naj
+(1) primerja umetniški pristop z generičnim prekrivanjem in neaktivno
+kontrolo, (2) v kodirno shemo zajame **dinamiko jakosti elementov v času**,
+(3) preveri **trajnost učinka izven seje** in (4) eksplicitno preizkusi
+**prilagojene kompozicije za zgoraj opredeljeno ranljivo skupino**, ki
+za zdajšnji standardni format kaže najmanj sprejemanja in največ tveganja
+za neprijetno izkušnjo.
+
+\newpage
+
+# Priloge
+
+## A. Tabela vseh ocen po sejah
+
+```{r appendix-table}
+agg_full <- stats::aggregate(
+  pl[, c("valence", "impact")],
+  by = list(Seja = pl$session, Del = pl$part),
+  FUN = function(x) sprintf("%.2f (n=%d)", mean(x, na.rm = TRUE),
+                            sum(!is.na(x)))
+)
+knitr::kable(agg_full,
+             caption = "Povprečne ocene prijetnosti in vpliva po seji in delu (z velikostjo vzorca).",
+             align = "ccll")
+```
+
+## B. Matrika prisotnosti zvočnih elementov po delih
+
+```{r comp-matrix, fig.cap="Prisotnost glasbenih elementov (vijolično) in elementov prekrivanja (zeleno) po posameznih delih kompozicij. Stolpci so deli v zaporedju seja.del; navpične sive črte ločujejo seje.", fig.width=10, fig.height=8, eval=HAS_ELEM}
+plot_composition_matrix(comp_matrix, elements_meta_df)
+```
+
+## C. Polni opisi kompozicij (avtor: B. Simon)
+
+```{r read-descriptions, results='asis'}
+descr_path <- here::here("data", "raw", "composition_descriptions.txt")
+if (file.exists(descr_path)) {
+  txt <- readLines(descr_path, encoding = "UTF-8")
+  cat("```\n")
+  cat(txt, sep = "\n")
+  cat("\n```\n")
+}
+```
+
+## D. Vzorec vprašalnika
+
+Skenirana kopija praznega vprašalnika (slovenska različica), kakršen je
+bil uporabljen na sejah, je priložena ločeno (`data/raw/questionnaire.pdf`).
+
+## E. Reproducibilnost
+
+Celotna koda je dostopna v projektnem repozitoriju. Glavni skripti:
+
+- `R/00_setup.R` — knjižnice in pomožne funkcije
+- `R/01_clean_data.R` — predobdelava surovih podatkov
+- `R/02_plots.R` — risarske funkcije
+- `R/03_textanalysis.R` — analiza prostih besedil
+- `R/04_signup_check.R` — analiza listov prisotnosti
+- `R/05_composition.R` — analiza po zvočnih elementih
+
+Poročilo (`report/porocilo.Rmd`) se preprosto preveže (knit) z izvedbo
+`rmarkdown::render("report/porocilo.Rmd")`.
+
+Pri pripravi tega poročila je bilo uporabljeno orodje umetne inteligence 
+(Claude, Anthropic) za podporo pri zasnovi raziskave, analizi podatkov 
+in pisanju. Vse metodološke odločitve, analitične izbire in končne 
+interpretacije so bile sprejete s strani avtorja, ki prevzema polno 
+odgovornost za vsebino.
